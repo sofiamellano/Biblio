@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Service.Services;
 using System.Text;
 using System.Text.Json;
 
@@ -51,5 +52,21 @@ namespace BiblioTestProject
             Console.WriteLine($"Respuesta de IA: {texto}");
             Assert.True(response.IsSuccessStatusCode);
         }
+
+        [Fact]
+        public async Task TestServicioGemini()
+        {
+            //leemos la api key desde appsettings.json
+            var configuration = new ConfigurationBuilder()
+                  .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                  .AddEnvironmentVariables()
+                  .Build();
+            var prompt = $"Me puedes dar un resumen de 100 palabras como máximo del libro Sin Red: Nadal, Federer y la historia detrás del duelo que cambió el tenis";
+            var servicio = new GeminiService(configuration);
+            var resultado = await servicio.GetPrompt(prompt);
+            Console.WriteLine($"Respuesta de IA desde servicio: {resultado}");
+            Assert.NotNull(resultado);
+        }
+
     }
 }
