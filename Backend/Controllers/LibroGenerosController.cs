@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.DataContext;
 using Service.Models;
+using Service.ExtentionMethods;
 
 namespace Backend.Controllers
 {
@@ -20,9 +21,9 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LibroGenero>>> GetLibroGeneros()
+        public async Task<ActionResult<IEnumerable<LibroGenero>>> GetLibroGeneros([FromQuery] string filtro = "")
         {
-            return await _context.LibroGeneros.AsNoTracking().Where(lg => !lg.IsDeleted).ToListAsync();
+            return await _context.LibroGeneros.Include(lg => lg.Libro).Include(lg => lg.Genero).AsNoTracking().Where(lg => lg.Libro.Titulo.Contains(filtro.ToUpper()) || lg.Genero.Nombre.Contains(filtro.ToUpper())).ToListAsync();
         }
 
         [HttpGet("deleteds")]
@@ -45,6 +46,8 @@ namespace Backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutLibroGenero(int id, LibroGenero libroGenero)
         {
+            _context.TryAttach(libroGenero?.Libro);
+            _context.TryAttach(libroGenero?.Genero);
             if (id != libroGenero.Id)
             {
                 return BadRequest();
@@ -71,6 +74,8 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<LibroGenero>> PostLibroGenero(LibroGenero libroGenero)
         {
+            _context.TryAttach(libroGenero?.Libro);
+            _context.TryAttach(libroGenero?.Genero);
             _context.LibroGeneros.Add(libroGenero);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetLibroGenero", new { id = libroGenero.Id }, libroGenero);

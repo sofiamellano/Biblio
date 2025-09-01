@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.DataContext;
 using Service.Models;
+using Service.ExtentionMethods;
 
 namespace Backend.Controllers
 {
@@ -45,6 +46,8 @@ namespace Backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPrestamo(int id, Prestamo prestamo)
         {
+            _context.TryAttach(prestamo?.Usuario);
+            _context.TryAttach(prestamo?.Ejemplar);
             if (id != prestamo.Id)
             {
                 return BadRequest();
@@ -71,6 +74,8 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<Prestamo>> PostPrestamo(Prestamo prestamo)
         {
+            _context.TryAttach(prestamo?.Usuario);
+            _context.TryAttach(prestamo?.Ejemplar);
             _context.Prestamos.Add(prestamo);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetPrestamo", new { id = prestamo.Id }, prestamo);

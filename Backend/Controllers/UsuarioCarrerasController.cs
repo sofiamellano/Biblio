@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.DataContext;
 using Service.Models;
+using Service.ExtentionMethods;
 
 namespace Backend.Controllers
 {
@@ -20,9 +21,9 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioCarrera>>> GetUsuarioCarreras()
+        public async Task<ActionResult<IEnumerable<UsuarioCarrera>>> GetUsuarioCarreras([FromQuery] string filtro = "")
         {
-            return await _context.UsuarioCarreras.AsNoTracking().Where(uc => !uc.IsDeleted).ToListAsync();
+            return await _context.UsuarioCarreras.Include(uc => uc.Usuario).Include(uc => uc.Carrera).AsNoTracking().Where(uc => uc.Usuario.Nombre.Contains(filtro.ToUpper()) || uc.Carrera.Nombre.Contains(filtro.ToUpper())).ToListAsync();
         }
 
         [HttpGet("deleteds")]
@@ -45,6 +46,8 @@ namespace Backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuarioCarrera(int id, UsuarioCarrera usuarioCarrera)
         {
+            _context.TryAttach(usuarioCarrera?.Usuario);
+            _context.TryAttach(usuarioCarrera?.Carrera);
             if (id != usuarioCarrera.Id)
             {
                 return BadRequest();
@@ -71,6 +74,8 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<UsuarioCarrera>> PostUsuarioCarrera(UsuarioCarrera usuarioCarrera)
         {
+            _context.TryAttach(usuarioCarrera?.Usuario);
+            _context.TryAttach(usuarioCarrera?.Carrera);
             _context.UsuarioCarreras.Add(usuarioCarrera);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetUsuarioCarrera", new { id = usuarioCarrera.Id }, usuarioCarrera);
