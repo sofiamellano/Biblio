@@ -53,32 +53,32 @@ namespace Backend.DataContext
             #endregion
             #region Datos Semilla de 10 Editoriales
             // datos semilla de editoriales 10
-            modelBuilder.Entity<Autor>().HasData(
-                new Autor { Id = 1, Nombre = "Penguin Random House" },
-                new Autor { Id = 2, Nombre = "HarperCollins" },
-                new Autor { Id = 3, Nombre = "Simon & Schuster" },
-                new Autor { Id = 4, Nombre = "Hachette Livre" },
-                new Autor { Id = 5, Nombre = "Macmillan Publishers" },
-                new Autor { Id = 6, Nombre = "Scholastic" },
-                new Autor { Id = 7, Nombre = "Bloomsbury" },
-                new Autor { Id = 8, Nombre = "Oxford University Press" },
-                new Autor { Id = 9, Nombre = "Cambridge University Press" },
-                new Autor { Id = 10, Nombre = "Wiley" }
+            modelBuilder.Entity<Editorial>().HasData(
+                new Editorial { Id = 1, Nombre = "Penguin Random House" },
+                new Editorial { Id = 2, Nombre = "HarperCollins" },
+                new Editorial { Id = 3, Nombre = "Simon & Schuster" },
+                new Editorial { Id = 4, Nombre = "Hachette Book Group" },
+                new Editorial { Id = 5, Nombre = "Macmillan Publishers" },
+                new Editorial { Id = 6, Nombre = "Scholastic" },
+                new Editorial { Id = 7, Nombre = "Bloomsbury Publishing" },
+                new Editorial { Id = 8, Nombre = "Oxford University Press" },
+                new Editorial { Id = 9, Nombre = "Cambridge University Press" },
+                new Editorial { Id = 10, Nombre = "Wiley" }
             );
             #endregion
             #region Datos Semilla de 10 Generos
             //datos semillas de generos 10
-            modelBuilder.Entity<Autor>().HasData(
-                new Autor { Id = 1, Nombre = "Ficción" },
-                new Autor { Id = 2, Nombre = "No Ficción" },
-                new Autor { Id = 3, Nombre = "Misterio" },
-                new Autor { Id = 4, Nombre = "Ciencia Ficción" },
-                new Autor { Id = 5, Nombre = "Fantasia" },
-                new Autor { Id = 6, Nombre = "Romance" },
-                new Autor { Id = 7, Nombre = "Terror" },
-                new Autor { Id = 8, Nombre = "Historia" },
-                new Autor { Id = 9, Nombre = "Biografía" },
-                new Autor { Id = 10, Nombre = "Poesía" }
+            modelBuilder.Entity<Genero>().HasData(
+                new Genero { Id = 1, Nombre = "Ficción" },
+                new Genero { Id = 2, Nombre = "No Ficción" },
+                new Genero { Id = 3, Nombre = "Misterio" },
+                new Genero { Id = 4, Nombre = "Ciencia Ficción" },
+                new Genero { Id = 5, Nombre = "Fantasía" },
+                new Genero { Id = 6, Nombre = "Romance" },
+                new Genero { Id = 7, Nombre = "Terror" },
+                new Genero { Id = 8, Nombre = "Aventura" },
+                new Genero { Id = 9, Nombre = "Historia" },
+                new Genero { Id = 10, Nombre = "Biografía" }
             );
             #endregion
 
