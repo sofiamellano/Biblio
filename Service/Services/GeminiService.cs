@@ -4,6 +4,7 @@ using Service.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,9 +13,15 @@ namespace Service.Services
     public class GeminiService : IGenimiService
     {
         private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient = new HttpClient();
+        public static string? jwtToken = string.Empty;
         public GeminiService(IConfiguration configuration)
         {
             _configuration = configuration;
+            if (!string.IsNullOrEmpty(GeminiService.jwtToken))
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GeminiService.jwtToken);
+            else
+                throw new ArgumentException("Token no definido.", nameof(GenericService<object>.jwtToken));
         }
         public async Task<string?> GetPrompt(string textPrompt)
         {
@@ -26,8 +33,8 @@ namespace Service.Services
             {
                 var UrlApi = _configuration["UrlApi"];
                 var endpointGemini = ApiEndpoints.GetEndpoint("Gemini");
-                var client = new HttpClient();
-                var response = await client.GetAsync($"{UrlApi}{endpointGemini}/prompt/{textPrompt}");
+                
+                var response = await _httpClient.GetAsync($"{UrlApi}{endpointGemini}/prompt/{textPrompt}");
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();

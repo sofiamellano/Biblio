@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Service.DTOs;
 using Service.Services;
 using System.Text;
 using System.Text.Json;
@@ -10,6 +11,7 @@ namespace BiblioTestProject
         [Fact]
         public async Task TestObtenerResumenLibroIA()
         {
+            await LoginTest();
             //leemos la api key desde appsettings.json
             var configuration = new ConfigurationBuilder()
                   .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -53,9 +55,25 @@ namespace BiblioTestProject
             Assert.True(response.IsSuccessStatusCode);
         }
 
+        private async Task LoginTest()
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var serviceAuth = new AuthService(config);
+            var token = await serviceAuth.Login(new LoginDTO
+            {
+                Username = "sofiimellano@gmail.com",
+                Password = "123456"
+            });
+            GeminiService.jwtToken = token;
+        }
+
         [Fact]
         public async Task TestServicioGemini()
         {
+            await LoginTest();
             //leemos la api key desde appsettings.json
             var configuration = new ConfigurationBuilder()
                   .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)

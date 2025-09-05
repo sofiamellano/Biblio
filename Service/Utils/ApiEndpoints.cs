@@ -20,6 +20,7 @@ namespace Service.Utils
         public static string LibroGenero { get; set; } = "librosgeneros";
         public static string UsuarioCarrera { get; set; } = "usuarioscarreras";
         public static string Gemini { get; set; } = "gemini";
+        public static string Login { get; set; } = "auth";
 
 
 
@@ -40,6 +41,7 @@ namespace Service.Utils
                 nameof(LibroGenero) => LibroGenero,
                 nameof(UsuarioCarrera) => UsuarioCarrera,
                 nameof(Gemini) => Gemini,
+                nameof(Login) => Login,
                 _ => throw new ArgumentException($"Endpoint '{name}' no está definido.")
             };
         }
