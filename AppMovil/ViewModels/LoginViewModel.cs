@@ -1,54 +1,45 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using Microsoft.Extensions.Configuration;
+using Service.Interfaces;
+using Service.Services;
+using Service.DTOs;
 
 namespace AppMovil.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public partial class LoginViewModel : ObservableObject
     {
-        private string _username = string.Empty;
-        private string _password = string.Empty;
-        private bool _isBusy;
-        private string _errorMessage = string.Empty;
+        AuthService _authService = new AuthService();
+        UsuarioService _usuarioService = new UsuarioService();
 
-        public string Username
-        {
-            get => _username;
-            set { _username = value; OnPropertyChanged(); ((Command)LoginCommand).ChangeCanExecute(); }
-        }
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+        private string username = string.Empty;
 
-        public string Password
-        {
-            get => _password;
-            set { _password = value; OnPropertyChanged(); ((Command)LoginCommand).ChangeCanExecute(); }
-        }
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+        private string password = string.Empty;
 
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set { _isBusy = value; OnPropertyChanged(); ((Command)LoginCommand).ChangeCanExecute(); }
-        }
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
+        private bool isBusy;
 
-        public string ErrorMessage
-        {
-            get => _errorMessage;
-            set { _errorMessage = value; OnPropertyChanged(); }
-        }
+        [ObservableProperty]
+        private string errorMessage = string.Empty;
 
-        public ICommand LoginCommand { get; }
+        public IRelayCommand LoginCommand { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public LoginViewModel()
         {
-            LoginCommand = new Command(OnLogin, CanLogin);
+            LoginCommand = new RelayCommand(OnLogin, CanLogin);
         }
-
+        
         private bool CanLogin()
         {
-            return !IsBusy && 
-                   !string.IsNullOrWhiteSpace(Username) && 
+            return !IsBusy &&
+                   !string.IsNullOrWhiteSpace(Username) &&
                    !string.IsNullOrWhiteSpace(Password);
         }
 
@@ -60,9 +51,25 @@ namespace AppMovil.ViewModels
             {
                 IsBusy = true;
                 ErrorMessage = string.Empty;
+                var response = await _authService.Login(new LoginDTO
+                {
+                    Username = Username,
+                    Password = Password
+                });
 
-                // Simulación de carga (opcional, puedes reducir o quitar)
-                await Task.Delay(500);
+
+
+                if (string.IsNullOrEmpty(response))
+                {
+                    ErrorMessage = "Usuario o Contraseña incorrecto";
+                }
+
+                var usuario = await _usuarioService.GetByEmailAsync(username);
+                if ( usuario == null)
+                {
+                    ErrorMessage = "No se pudo obtener la información del usuario.";
+                    return;
+                }
 
                 // PERMITE CUALQUIER USUARIO/CONTRASEÑA durante desarrollo
                 // Solo requiere que no estén vacíos
@@ -81,9 +88,5 @@ namespace AppMovil.ViewModels
             }
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

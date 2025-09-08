@@ -1,45 +1,36 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Xml.Serialization;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using Service.Models;
 
 namespace AppMovil.ViewModels
 {
-    public class AppShellViewModel : INotifyPropertyChanged
+    public partial class AppShellViewModel : ObservableObject
     {
-        private bool _isLoggedIn;
-        private bool _loginVisible = true;
-        private bool _menuVisible = false;
+        [ObservableProperty]
+        private bool isLoggedIn;
+        [ObservableProperty]
+        private bool loginVisible = true;
+        [ObservableProperty]
+        private bool menuVisible = false;
 
-        public bool IsLoggedIn
+        public Usuario? Usuario { get; private set; }
+
+        partial void OnIsLoggedInChanged(bool value)
         {
-            get => _isLoggedIn;
-            set 
-            { 
-                _isLoggedIn = value;
-                LoginVisible = !value;
-                MenuVisible = value;
-                OnPropertyChanged();
-            }
+            LoginVisible = !value;
+            MenuVisible = value;
         }
 
-        public bool LoginVisible
-        {
-            get => _loginVisible;
-            set { _loginVisible = value; OnPropertyChanged(); }
-        }
-
-        public bool MenuVisible
-        {
-            get => _menuVisible;
-            set { _menuVisible = value; OnPropertyChanged(); }
-        }
-
-        public ICommand LogoutCommand { get; }
+        public IRelayCommand LogoutCommand { get; }
 
         public AppShellViewModel()
         {
-            LogoutCommand = new Command(OnLogout);
+            LogoutCommand = new RelayCommand(OnLogout);
         }
 
         public void SetLoginState(bool isLoggedIn)
@@ -51,15 +42,14 @@ namespace AppMovil.ViewModels
                 Shell.Current.GoToAsync("//LoginPage");
         }
 
+        public void SetUserLogin(Usuario usuario)
+        {
+            Usuario = usuario;
+        }
+
         private void OnLogout()
         {
             SetLoginState(false);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

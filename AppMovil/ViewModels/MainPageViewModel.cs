@@ -55,7 +55,7 @@ namespace AppMovil.ViewModels
         {
             AccesosRapidos.Add(new AccesoRapidoItem
             {
-                Titulo = "?? Buscar Libros",
+                Titulo = "Buscar Libros",
                 Descripcion = "Encuentra libros en el catálogo",
                 Ruta = "//BuscarLibrosPage",
                 Color = "#2196F3"
@@ -63,7 +63,7 @@ namespace AppMovil.ViewModels
 
             AccesosRapidos.Add(new AccesoRapidoItem
             {
-                Titulo = "?? Mis Préstamos",
+                Titulo = "Mis Préstamos",
                 Descripcion = "Ver préstamos activos",
                 Ruta = "//PrestamosPage",
                 Color = "#FF9800"
@@ -71,7 +71,7 @@ namespace AppMovil.ViewModels
 
             AccesosRapidos.Add(new AccesoRapidoItem
             {
-                Titulo = "?? Devoluciones",
+                Titulo = "Devoluciones",
                 Descripcion = "Historial de devoluciones",
                 Ruta = "//DevolucionesPage",
                 Color = "#4CAF50"
