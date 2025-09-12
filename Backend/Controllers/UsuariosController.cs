@@ -45,7 +45,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("byemail")]
-        public async Task<ActionResult<Usuario>> GetByEmailUsuario([FromQuery] string email?)
+        public async Task<ActionResult<Usuario>> GetByEmailUsuario([FromQuery] string email)
         {
             if (string.IsNullOrEmpty(email))
             {
