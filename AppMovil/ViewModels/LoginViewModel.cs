@@ -10,8 +10,8 @@ namespace AppMovil.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
-        AuthService _authService = new AuthService();
-        UsuarioService _usuarioService = new UsuarioService();
+        AuthService _authService;
+        UsuarioService _usuarioService;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(LoginCommand))]
@@ -33,6 +33,8 @@ namespace AppMovil.ViewModels
 
         public LoginViewModel()
         {
+            _authService = new AuthService();
+            _usuarioService = new UsuarioService();
             LoginCommand = new RelayCommand(OnLogin, CanLogin);
         }
         
@@ -51,17 +53,17 @@ namespace AppMovil.ViewModels
             {
                 IsBusy = true;
                 ErrorMessage = string.Empty;
+
                 var response = await _authService.Login(new LoginDTO
                 {
                     Username = Username,
                     Password = Password
                 });
 
-
-
-                if (string.IsNullOrEmpty(response))
+                if (!response)
                 {
                     ErrorMessage = "Usuario o Contraseña incorrecto";
+                    return;
                 }
 
                 var usuario = await _usuarioService.GetByEmailAsync(username);
@@ -88,5 +90,13 @@ namespace AppMovil.ViewModels
             }
         }
 
+        partial void OnErrorMessageChanged(string? oldValue, string newValue)
+        {
+            if (!string.IsNullOrEmpty(newValue))
+            {
+                // Mostrar una alerta cuando ErrorMessage cambie a un valor no vacío
+                Application.Current?.MainPage?.DisplayAlert("Error de Login", newValue, "OK");
+            }
+        }
     }
 }

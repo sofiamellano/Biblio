@@ -51,7 +51,7 @@ namespace Backend.Controllers
             {
                 return BadRequest("Ël parametro email es obligatorio.");
             }
-            var usuario = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(email));
+            var usuario = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Equals(email));
             if (usuario == null)
             {
                 return NotFound();

@@ -35,6 +35,10 @@ namespace AppMovil.ViewModels
 
         public void SetLoginState(bool isLoggedIn)
         {
+            if (isLoggedIn)
+                Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
+            else
+                Shell.Current.FlyoutBehavior = FlyoutBehavior.Disabled;
             IsLoggedIn = isLoggedIn;
             if (isLoggedIn)
                 Shell.Current.GoToAsync("//MainPage");  // Cambio a MainPage (pantalla de inicio)

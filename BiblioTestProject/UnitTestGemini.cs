@@ -61,7 +61,7 @@ namespace BiblioTestProject
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var serviceAuth = new AuthService(config);
+            var serviceAuth = new AuthService();
             var token = await serviceAuth.Login(new LoginDTO
             {
                 Username = "sofiimellano@gmail.com",

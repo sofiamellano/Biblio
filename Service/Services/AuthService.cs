@@ -18,7 +18,7 @@ namespace Service.Services
         {
         }
        
-        public async Task<string?> Login(LoginDTO? login)
+        public async Task<bool> Login(LoginDTO? login)
         {
             if (login == null)
             {
@@ -33,11 +33,12 @@ namespace Service.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
-                    return result;
+                    GenericService<object>.jwtToken = result;
+                    return true;
                 }
                 else
                 {
-                    return null;
+                    return false;
                 }
             }
             catch (Exception ex)
