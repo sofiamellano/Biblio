@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Service.DTOs;
 using Service.Services;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -67,7 +68,6 @@ namespace BiblioTestProject
                 Username = "sofiimellano@gmail.com",
                 Password = "123456"
             });
-            GeminiService.jwtToken = token;
         }
 
         [Fact]
@@ -86,5 +86,41 @@ namespace BiblioTestProject
             Assert.NotNull(resultado);
         }
 
+        [Fact]
+        public async Task TestReconocerPortadaGeminiController()
+        {
+            // Autenticación (si tu API requiere token, obténlo aquí)
+            await LoginTest();
+
+            // Ruta de la imagen de prueba (debe existir en la carpeta del proyecto)
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "portada_test.jpg");
+            Assert.True(File.Exists(imagePath), $"No se encontró la imagen de prueba: {imagePath}");
+
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:7000/"); // Cambia el puerto si tu backend usa otro
+
+            // Si necesitas token:
+            // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            using var form = new MultipartFormDataContent();
+            using var imageStream = File.OpenRead(imagePath);
+            var imageContent = new StreamContent(imageStream);
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            form.Add(imageContent, "Image", "portada_test.jpg");
+
+            // Puedes agregar otros campos si BookCoverExtractionRequestDTO los requiere
+
+            var response = await client.PostAsync("api/gemini/ocr-portada", form);
+            var result = await response.Content.ReadAsStringAsync();
+
+            Assert.True(response.IsSuccessStatusCode, $"Error en la API: {result}");
+
+            // Deserializa el resultado
+            var metadata = JsonSerializer.Deserialize<BookMetadataDTO>(result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Assert.NotNull(metadata);
+            Assert.False(string.IsNullOrWhiteSpace(metadata.Titulo));
+            Assert.NotNull(metadata.Autores);
+            Assert.NotNull(metadata.Editorial);
+        }
     }
 }

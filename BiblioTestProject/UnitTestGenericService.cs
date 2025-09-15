@@ -39,7 +39,6 @@ namespace BiblioTestProject
                 Username = "sofiimellano@gmail.com",
                 Password = "123456"
             });
-            GenericService<object>.jwtToken = token;
         }
 
         [Fact]

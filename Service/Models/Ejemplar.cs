@@ -19,5 +19,10 @@ namespace Service.Models
         [Required]
         public EstadoEnum Estado { get; set; } = EstadoEnum.Exelente;
         public bool IsDeleted { get; set; } = false;
+
+        public override string ToString()
+        {
+            return $"{Libro?.Titulo}";
+        }
     }
 }

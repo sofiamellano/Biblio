@@ -25,7 +25,7 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Prestamo>>> GetPrestamos()
         {
-            return await _context.Prestamos.AsNoTracking().Where(p => !p.IsDeleted).ToListAsync();
+            return await _context.Prestamos.Include(p => p.Ejemplar).ThenInclude(e => e.Libro).AsNoTracking().Where(p => !p.IsDeleted).ToListAsync();
         }
 
         [HttpGet("deleteds")]
@@ -34,15 +34,29 @@ namespace Backend.Controllers
             return await _context.Prestamos.AsNoTracking().IgnoreQueryFilters().Where(p => p.IsDeleted).ToListAsync();
         }
 
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Prestamo>> GetPrestamo(int id)
         {
-            var prestamo = await _context.Prestamos.AsNoTracking().FirstOrDefaultAsync(p => p.Id.Equals(id));
+            var prestamo = await _context.Prestamos.Include(p => p.Ejemplar).ThenInclude(e => e.Libro).AsNoTracking().FirstOrDefaultAsync(p => p.Id.Equals(id));
             if (prestamo == null)
             {
                 return NotFound();
             }
             return prestamo;
+        }
+
+        [HttpGet("byusuario")]
+        public async Task<ActionResult<List<Prestamo>?>> GetByUsuario([FromQuery] int idusuario = 0)
+        {
+            if (idusuario == 0)
+            {
+                return BadRequest("Ël parametro idusuario es obligatorio.");
+            }
+
+            var prestamos = await _context.Prestamos.Include(p => p.Ejemplar).ThenInclude(e => e.Libro).AsNoTracking().Where(p => p.UsuarioId.Equals(idusuario)).ToListAsync();
+            
+            return prestamos;
         }
 
         [HttpPut("{id}")]
