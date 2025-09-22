@@ -14,10 +14,7 @@ namespace Service.Services
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
-        public AuthService()
-        {
-        }
-       
+        public AuthService(){ }
         public async Task<bool> Login(LoginDTO? login)
         {
             if (login == null)
