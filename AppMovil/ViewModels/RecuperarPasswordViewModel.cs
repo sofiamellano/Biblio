@@ -1,10 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Service.Interfaces;
+using Service.Services;
 
 namespace AppMovil.ViewModels
 {
     public partial class RecuperarPasswordViewModel : ObservableObject
     {
+        AuthService _authService = new();
+
         [ObservableProperty]
         private string mail = string.Empty;
 
@@ -48,13 +52,8 @@ namespace AppMovil.ViewModels
                     return;
                 }
 
-                // TODO: Implementar lógica de recuperación de contraseña
-                await Task.Delay(2000); // Simular llamada al servidor
 
-                SuccessMessage = "Se han enviado las instrucciones a tu correo electrónico";
-                
-                // Opcional: Volver al login después de unos segundos
-                await Task.Delay(2000);
+
                 await OnVolver();
             }
             catch (Exception ex)
@@ -71,8 +70,5 @@ namespace AppMovil.ViewModels
         {
             await Shell.Current.GoToAsync("//LoginPage");
         }
-
-        // Notificar cambios para revalidar el comando
-        partial void OnEmailChanged(string value) => EnviarCommand.NotifyCanExecuteChanged();
     }
 }

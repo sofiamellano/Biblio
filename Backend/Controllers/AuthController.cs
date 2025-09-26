@@ -1,5 +1,6 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTOs;
@@ -43,6 +44,22 @@ namespace Backend.Controllers
             {
                 var credential = await firebaseAuthClient.SignInWithEmailAndPasswordAsync(login.Username, login.Password);
                 return Ok(credential.User.GetIdTokenAsync().Result);
+            }
+            catch (FirebaseAuthException ex)
+            {
+                return BadRequest(new { message = ex.Reason.ToString() });
+            }
+        }
+
+
+        [Authorize]
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] LoginDTO login)
+        {
+            try
+            {
+                await firebaseAuthClient.ResetEmailPasswordAsync(login.Username);
+                return Ok();
             }
             catch (FirebaseAuthException ex)
             {

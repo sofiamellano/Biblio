@@ -41,7 +41,11 @@ namespace AppMovil.ViewModels
 
         private async void OnForgotPassword()
         {
-            await Shell.Current.GoToAsync("//RecuperarPasswordPage");
+            if (Application.Current?.MainPage is AppShell shell)
+            {
+                shell.ViewModel.ResetPasswordVisible = true;
+                shell.SetLoginState(false);
+            }
         }
 
         private bool CanLogin()
