@@ -1,4 +1,4 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:AppMovil.ViewModels"
              x:Class="AppMovil.Pages.LoginPage"
@@ -12,12 +12,27 @@
         <Entry Placeholder="Contrasena" IsPassword="True" Text="{Binding Password}"/>
         <Button Text="Ingresar" Command="{Binding LoginCommand}"/>
         
-        <!--Ingreso el texto enlace "Olvide mi contrasena"-->
-        <Label Text="Olvide mi contrasena" TextColor="Blue" FontSize="Body" HorizontalOptions="Center">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
-            </Label.GestureRecognizers>
-        </Label>
+        <!--Botón para olvidé mi contraseña-->
+        <Button Text="Olvide mi contrasena" 
+                Command="{Binding ForgotPasswordCommand}"
+                BackgroundColor="Transparent"
+                TextColor="Blue"
+                BorderWidth="1"
+                BorderColor="Blue"
+                FontSize="14"
+                HeightRequest="40"
+                Margin="0,10,0,5"/>
+        
+        <!--Botón para registrarse-->
+        <Button Text="Registrarse" 
+                Command="{Binding RegisterCommand}"
+                BackgroundColor="Transparent"
+                TextColor="Green"
+                BorderWidth="1"
+                BorderColor="Green"
+                FontSize="14"
+                HeightRequest="40"
+                Margin="0,5,0,10"/>
         
         <ActivityIndicator IsRunning="{Binding IsBusy}"/>
     </StackLayout>

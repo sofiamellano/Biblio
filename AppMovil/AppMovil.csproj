@@ -63,6 +63,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Pages\RegistrarsePage.xaml.cs">
+	    <DependentUpon>RegistrarsePage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Pages\PrestamosPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

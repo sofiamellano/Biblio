@@ -30,6 +30,7 @@ namespace AppMovil.ViewModels
 
         public IRelayCommand LoginCommand { get; }
         public IRelayCommand ForgotPasswordCommand { get; }
+        public IRelayCommand RegisterCommand { get; }
 
         public LoginViewModel()
         {
@@ -37,6 +38,16 @@ namespace AppMovil.ViewModels
             _usuarioService = new UsuarioService();
             LoginCommand = new RelayCommand(OnLogin, CanLogin);
             ForgotPasswordCommand = new RelayCommand(OnForgotPassword);
+            RegisterCommand = new RelayCommand(OnRegister);
+        }
+
+        private void OnRegister()
+        {
+            if (Application.Current?.MainPage is AppShell shell)
+            {
+                shell.ViewModel.RegistrarseVisible = true;
+                shell.SetLoginState(false);
+            }
         }
 
         private async void OnForgotPassword()

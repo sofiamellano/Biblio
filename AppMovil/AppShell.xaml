@@ -31,13 +31,21 @@
         IsVisible="{Binding LoginVisible}"
         FlyoutItemIsVisible="False" />
 
-    <!-- Pantalla de cambiar contraseña -->
+    <!-- Pantalla de Registrarse -->
     <ShellContent
-     Title="Cambiar Contraseña"
-     ContentTemplate="{DataTemplate pages:RecuperarPasswordPage}"
-     Route="ResetPassword"
-     IsVisible="{Binding ResetPasswordVisible}"
-     FlyoutItemIsVisible="False" />
+        Title="Registrarse"
+        ContentTemplate="{DataTemplate pages:RegistrarsePage}"
+        Route="RegistrarsePage"
+        IsVisible="{Binding RegistrarseVisible}"
+        FlyoutItemIsVisible="False" />
+
+    <!-- Pantalla de Recuperar Contraseña -->
+    <ShellContent
+        Title="Recuperar Contraseña"
+        ContentTemplate="{DataTemplate pages:RecuperarPasswordPage}"
+        Route="ResetPassword"
+        IsVisible="{Binding ResetPasswordVisible}"
+        FlyoutItemIsVisible="False" />
 
     <!-- Menu Principal - Solo visible cuando está logueado -->
     <FlyoutItem Title="🏠 Inicio" Icon="home.png" IsVisible="{Binding MenuVisible}">
