@@ -23,7 +23,7 @@ namespace Service.Services
             else
                 throw new ArgumentException("Token no definido.", nameof(GenericService<object>.jwtToken));
         }
-        public async Task<bool> Login(LoginDTO? login)
+        public async Task<string?> Login(LoginDTO? login)
         {
             if (login == null)
             {
@@ -40,11 +40,12 @@ namespace Service.Services
                     var result = await response.Content.ReadAsStringAsync();
                     
                     GenericService<object>.jwtToken = result;
-                    return true;
+                    return null;
                 }
                 else
                 {
-                    return false;
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    return errorContent;
                 }
             }
             catch (Exception ex)
@@ -96,6 +97,8 @@ namespace Service.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
+
+                    GenericService<object>.jwtToken = result;
                     return true;
                 }
                 else

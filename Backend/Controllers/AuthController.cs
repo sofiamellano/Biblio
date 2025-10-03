@@ -45,6 +45,10 @@ namespace Backend.Controllers
             try
             {
                 var credential = await firebaseAuthClient.SignInWithEmailAndPasswordAsync(login.Username, login.Password);
+                if (credential.User.Info.IsEmailVerified == false)
+                {
+                    return BadRequest("Email no verificado. Verifica tu correo antes de Iniciar Sesion.");
+                }
                 return Ok(credential.User.GetIdTokenAsync().Result);
             }
             catch (FirebaseAuthException ex)
@@ -60,7 +64,7 @@ namespace Backend.Controllers
             {
                 var user = await firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(register.Email, register.Password, register.Nombre);
                 await SendVerificationEmailAsync(user.User.GetIdTokenAsync().Result);
-                return Ok(user);
+                return Ok(user.User.GetIdTokenAsync().Result);
             }
             catch (FirebaseAuthException ex)
             {

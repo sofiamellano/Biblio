@@ -68,14 +68,6 @@ namespace AppMovil.ViewModels
                 Ruta = "//PrestamosPage",
                 Color = "#FF9800"
             });
-
-            AccesosRapidos.Add(new AccesoRapidoItem
-            {
-                Titulo = "Devoluciones",
-                Descripcion = "Historial de devoluciones",
-                Ruta = "//DevolucionesPage",
-                Color = "#4CAF50"
-            });
         }
 
         private async void OnNavegar(string ruta)

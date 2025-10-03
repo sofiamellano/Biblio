@@ -81,9 +81,9 @@ namespace AppMovil.ViewModels
                     Password = Password
                 });
 
-                if (!response)
+                if (response != null)
                 {
-                    ErrorMessage = "Usuario o Contraseña incorrecto";
+                    ErrorMessage = response;
                     return;
                 }
 
