@@ -47,8 +47,12 @@ namespace Web.Services
         public async Task<FirebaseUser?> GetUserFirebase()
         {
             var userFirebase = await _jsRuntime.InvokeAsync<FirebaseUser>("firebaseAuth.getUserFirebase");
-            CurrentUser = userFirebase;
-            return userFirebase;
+            if (userFirebase != null && userFirebase.EmailVerified)
+            {
+                CurrentUser = userFirebase;
+                return userFirebase;
+            }
+            else return null;
         }
 
         public async Task SetUserToken()
@@ -66,6 +70,7 @@ namespace Web.Services
             if (user != null)
             {
                 await SetUserToken();
+                OnChangeLogin?.Invoke();
             }
             return user != null;
         }
@@ -76,6 +81,12 @@ namespace Web.Services
             CurrentUser = userFirebase;
             OnChangeLogin?.Invoke();
             return userFirebase;
+        }
+
+        public async Task<bool> RecoveryPassword (string email)
+        {
+            return await _jsRuntime.InvokeAsync<bool>("firebaseAuth.recoveryPassword", email);
+
         }
     }
 }
