@@ -1,0 +1,71 @@
+﻿<div class="col-12">
+    <div class="card book-card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+            <div class="row align-items-start">
+                <!-- Ícono del libro -->
+                <div class="col-auto">
+                    <div class="book-icon text-primary">
+                        <i class="bi bi-book-fill"></i>
+                    </div>
+                </div>
+
+                <!-- Información del libro -->
+                <div class="col">
+                    <h4 class="book-title fw-bold text-dark mb-2">@libro.Titulo</h4>
+
+                    <div class="book-details">
+                        @if (!string.IsNullOrEmpty(libro.Autores))
+                        {
+                            <p class="mb-2">
+                                <i class="bi bi-person-fill text-muted me-2"></i>
+                                <span class="text-muted">@libro.Autores</span>
+                            </p>
+                        }
+
+                        @if (!string.IsNullOrEmpty(libro.Generos))
+                        {
+                            <p class="mb-2">
+                                <i class="bi bi-tags text-muted me-2"></i>
+                                <span class="text-muted">@libro.Generos</span>
+                            </p>
+                        }
+
+                        @if (libro.Editorial != null)
+                        {
+                            <p class="mb-2">
+                                <i class="bi bi-building text-muted me-2"></i>
+                                <span class="text-muted">Editorial: @libro.Editorial.Nombre</span>
+                            </p>
+                        }
+
+                        @if (libro.AnioPublicacion > 0)
+                        {
+                            <p class="mb-2">
+                                <i class="bi bi-calendar text-muted me-2"></i>
+                                <span class="text-muted">Año: @libro.AnioPublicacion</span>
+                            </p>
+                        }
+
+                        @if (libro.Paginas > 0)
+                        {
+                            <p class="mb-2">
+                                <i class="bi bi-file-text text-muted me-2"></i>
+                                <span class="text-muted">Páginas: @libro.Paginas</span>
+                            </p>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(libro.Descripcion))
+                    {
+                        <p class="book-description text-muted mt-3 mb-0">@libro.Descripcion</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Libro libro { get; set; } = new Libro();
+}

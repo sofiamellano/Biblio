@@ -129,12 +129,12 @@ else
                     return;
                 }
                 isAuthenticated = true;
+                await _firebaseAuthService.IsUserAuthenticated();
                 StateHasChanged();
-                // Aquí podrías redirigir al usuario a otra página si es necesario
+                
             }
             else
             {
-                // Manejar error de autenticación (mostrar mensaje, etc.)
                 await _sweetAlert.FireAsync("Error de autenticación", "Correo o contraseña incorrectos.", SweetAlertIcon.Error);
             }
         }
@@ -165,12 +165,11 @@ else
         if (user != null)
         {
             isAuthenticated = true;
+            await _firebaseAuthService.IsUserAuthenticated();
             StateHasChanged();
-            // Aquí podrías redirigir al usuario a otra página si es necesario
         }
         else
         {
-            // Manejar error de autenticación (mostrar mensaje, etc.)
             await _sweetAlert.FireAsync("Error de autenticación", "No se pudo iniciar sesión con Google.", SweetAlertIcon.Error);
         }
     }

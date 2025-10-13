@@ -1,0 +1,144 @@
+﻿<div class="card search-card shadow border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold text-dark mb-3">
+            <i class="bi bi-question-circle me-2"></i>
+            ¿Qué libro estás buscando?
+        </h5>
+
+        <!-- Barra de búsqueda -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-10">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light-subtle">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input class="form-control" @bind="searchText" @bind:event="oninput"
+                           placeholder="Buscar por título, autor, editorial..." />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success btn-lg w-100" @onclick="HandleBuscar" disabled="@isBusy">
+                    @if (isBusy)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    <i class="bi bi-search me-1"></i>
+                    Buscar
+                </button>
+            </div>
+        </div>
+
+        <!-- Botón filtros -->
+        <button class="btn btn-outline-primary mb-3" @onclick="ToggleFiltros">
+            <i class="bi bi-gear me-2"></i>
+            Filtros de búsqueda
+            <i class="bi @(mostrarFiltros ? "bi-chevron-up" : "bi-chevron-down") ms-2"></i>
+        </button>
+
+        <!-- Panel de filtros -->
+        <div class="@(mostrarFiltros ? "d-block" : "d-none")">
+            <div class="card bg-light border-primary">
+                <div class="card-body">
+                    <h6 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-funnel me-2"></i>
+                        Buscar en:
+                    </h6>
+
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="filtrarPorTitulo" id="filtroTitulo">
+                                <label class="form-check-label" for="filtroTitulo">
+                                    <i class="bi bi-book me-1"></i> Título
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="filtrarPorAutor" id="filtroAutor">
+                                <label class="form-check-label" for="filtroAutor">
+                                    <i class="bi bi-person-fill me-1"></i> Autor
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="filtrarPorEditorial" id="filtroEditorial">
+                                <label class="form-check-label" for="filtroEditorial">
+                                    <i class="bi bi-building me-1"></i> Editorial
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="filtrarPorGenero" id="filtroGenero">
+                                <label class="form-check-label" for="filtroGenero">
+                                    <i class="bi bi-tags me-1"></i> Género
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-warning mt-3" @onclick="LimpiarBusqueda">
+                        <i class="bi bi-arrow-clockwise me-2"></i>
+                        Limpiar búsqueda
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador de carga -->
+        @if (isBusy)
+        {
+            <div class="text-center mt-3">
+                <div class="spinner-border text-primary me-2" role="status"></div>
+                <span class="text-primary">Buscando libros...</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<Libro>? Libros { get; set; }
+    [Parameter]
+    public EventCallback<FilterLibroDTO> OnBuscar { get; set; }
+
+    private string searchText = string.Empty;
+    private bool isBusy = false;
+    private bool hasSearched = false;
+    private bool hasRendered = false;
+    private bool mostrarFiltros = false;
+
+    // Filtros
+    private bool filtrarPorTitulo = true;
+    private bool filtrarPorAutor = false;
+    private bool filtrarPorEditorial = false;
+    private bool filtrarPorGenero = false;
+
+    private void ToggleFiltros()
+    {
+        mostrarFiltros = !mostrarFiltros;
+    }
+
+    private async Task LimpiarBusqueda()
+    {
+        searchText = string.Empty;
+        await HandleBuscar();
+    }
+
+    private async Task HandleBuscar()
+    {
+        var filtro = new FilterLibroDTO
+        {
+            SearchText = this.searchText,
+            ForTitulo = this.filtrarPorTitulo,
+            ForAutor = this.filtrarPorAutor,
+            ForEditorial = this.filtrarPorEditorial,
+            ForGenero = this.filtrarPorGenero
+        };
+        isBusy = true;
+        await OnBuscar.InvokeAsync(filtro);
+        isBusy = false;
+    }
+}

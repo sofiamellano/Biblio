@@ -95,8 +95,6 @@ namespace AppMovil.ViewModels
                 }
                 Preferences.Set("UserLoginId", usuario.Id);
 
-                // PERMITE CUALQUIER USUARIO/CONTRASEÑA durante desarrollo
-                // Solo requiere que no estén vacíos
                 if (Application.Current?.MainPage is AppShell shell)
                 {
                     shell.SetLoginState(true);

@@ -1,0 +1,18 @@
+﻿<div class="card header-card shadow-lg border-0 rounded-4 mb-4">
+    <div class="card-body bg-gradient-primary text-white p-4 rounded-4">
+        <div class="text-center">
+            <h2 class="mb-2 fw-bold">
+                <i class="bi bi-search fs-1 me-2"></i>
+               @Titulo
+            </h2>
+            <p class="mb-0 opacity-75 fs-5">@Descripcion</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Titulo { get; set; } = "Titulo no definido";
+    [Parameter]
+    public string Descripcion { get; set; } = "Descripcion no definida";
+}
