@@ -1,0 +1,212 @@
+﻿@page "/miembros/prestamos"
+@inject IPrestamoService _prestamoService
+@inject IMemoryCache _cacheMemory
+@inject SweetAlertService _sweetAlert
+@rendermode InteractiveServer
+
+<div class="search-wrapper">
+    <div class="container-fluid py-4">
+        
+        <!-- Encabezado -->
+        <Encabezado Titulo="Mis Préstamos" Descripcion="Gestiona tus préstamos de libros" />
+
+        <!-- Indicador de carga -->
+        @if (IsBusy)
+        {
+            <div class="card search-card shadow border-0 rounded-4 mb-4">
+                <div class="card-body p-4 text-center">
+                    <div class="spinner-border text-primary me-2" role="status"></div>
+                    <span class="text-primary">Cargando préstamos...</span>
+                </div>
+            </div>
+        }
+
+        <!-- Solo mostrar contenido después del primer render -->
+        @if (hasRendered)
+        {
+            <!-- Sección Préstamos Vigentes -->
+            <div class="card search-card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-success text-white rounded-top-4 py-3">
+                    <div class="text-center">
+                        <h5 class="mb-1 fw-bold">
+                            <i class="bi bi-bookmark-check me-2"></i>
+                            Préstamos Vigentes
+                        </h5>
+                        <small>@PrestamosVigentes.Count préstamos activos</small>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    @if (PrestamosVigentes.Count == 0 && !IsBusy)
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-info-circle text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">Sin préstamos vigentes</h5>
+                            <p class="text-muted">No tienes préstamos vigentes</p>
+                        </div>
+                    }
+
+                    @foreach (var p in PrestamosVigentes)
+                    {
+                        <div class="card book-card shadow border-0 rounded-4 border-success mb-3">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+                                    <!-- Ícono del libro -->
+                                    <div class="col-auto">
+                                        <div class="book-icon text-success">
+                                            <i class="bi bi-book-fill"></i>
+                                        </div>
+                                    </div>
+
+                                    <!-- Información del préstamo -->
+                                    <div class="col">
+                                        <h5 class="book-title fw-bold text-dark mb-2">@p.Ejemplar?.Libro?.Titulo</h5>
+                                        <div class="book-details">
+                                            <p class="mb-2">
+                                                <i class="bi bi-calendar-event text-muted me-2"></i>
+                                                <span class="text-muted">Prestado el: @p.FechaPrestamo.ToString("dd/MM/yyyy")</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Estado -->
+                                    <div class="col-auto">
+                                        <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Activo
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Sección Préstamos Históricos -->
+            <div class="card search-card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-primary text-white rounded-top-4 py-3">
+                    <div class="text-center">
+                        <h5 class="mb-1 fw-bold">
+                            <i class="bi bi-archive me-2"></i>
+                            Préstamos Históricos
+                        </h5>
+                        <small>@PrestamosHistoricos.Count préstamos devueltos</small>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    @if (PrestamosHistoricos.Count == 0 && !IsBusy)
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-journal-text text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">Sin historial</h5>
+                            <p class="text-muted">No tienes préstamos históricos</p>
+                        </div>
+                    }
+
+                    @foreach (var p in PrestamosHistoricos)
+                    {
+                        <div class="card book-card shadow border-0 rounded-4 border-info mb-3">
+                            <div class="card-body p-4">
+                                <div class="row align-items-center">
+                                    <!-- Ícono del libro -->
+                                    <div class="col-auto">
+                                        <div class="book-icon text-info">
+                                            <i class="bi bi-book"></i>
+                                        </div>
+                                    </div>
+
+                                    <!-- Información del préstamo -->
+                                    <div class="col">
+                                        <h5 class="book-title fw-bold text-dark mb-2">@p.Ejemplar?.Libro?.Titulo</h5>
+                                        <div class="book-details">
+                                            <p class="mb-2">
+                                                <i class="bi bi-calendar-event text-muted me-2"></i>
+                                                <span class="text-muted">Prestado el: @p.FechaPrestamo.ToString("dd/MM/yyyy")</span>
+                                            </p>
+                                            <p class="mb-0">
+                                                <i class="bi bi-calendar-check text-success me-2"></i>
+                                                <span class="text-success">Devuelto el: @p.FechaDevolucion?.ToString("dd/MM/yyyy")</span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Estado -->
+                                    <div class="col-auto">
+                                        <span class="badge bg-success fs-6 px-3 py-2">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Devuelto
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    bool IsBusy { get; set; } = true;
+    bool hasRendered = false;
+    List<Prestamo> PrestamosVigentes { get; set; } = new();
+    List<Prestamo> PrestamosHistoricos { get; set; } = new();
+    Usuario? UsuarioLogueado { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hasRendered = true;
+            
+            // Si tienes un servicio de usuario, carga el usuario logueado aquí
+            UsuarioLogueado = _cacheMemory.Get<Usuario>("usuarioLogueado");
+            if(UsuarioLogueado == null)
+            {
+                await _sweetAlert.FireAsync("Error", "No se encontró el usuario logueado. Por favor, inicia sesión.", SweetAlertIcon.Error);
+                IsBusy = false;
+                StateHasChanged();
+                return;
+            }
+            else
+            {
+                // Si el usuario está en caché, puedes usar su ID para cargar los préstamos
+                // Asegúrate de que el servicio GetByUsuarioAsync acepte el ID correcto
+                await CargarPrestamosAsync();
+            }
+            
+            StateHasChanged();
+        }
+    }
+
+    private async Task CargarPrestamosAsync()
+    {
+        try
+        {
+            IsBusy = true;
+            // Si tu backend tiene endpoint por usuario, reemplaza 0 por el id real o ajusta el servicio
+            if (UsuarioLogueado != null)
+            {
+                var todos = await _prestamoService.GetByUsuarioAsync(UsuarioLogueado.Id);
+                var now = DateTime.Now.Date;
+                PrestamosVigentes = (todos ?? new()).Where(p => p.FechaDevolucion == null).ToList();
+                PrestamosHistoricos = (todos ?? new()).Where(p => p.FechaDevolucion != null).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Solo usar SweetAlert si ya se ha renderizado
+            if (hasRendered)
+            {
+                await _sweetAlert.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
+            }
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+}

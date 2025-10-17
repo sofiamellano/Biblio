@@ -11,12 +11,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// caching memory   
+builder.Services.AddMemoryCache();
+// Auth service que usa el provider
+builder.Services.AddScoped<FirebaseAuthService>();
+
+// Registra el AuthenticationHandler
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<FirebaseAuthService>();
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<ILibroService, LibroService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<UsuarioSessionService>();
+builder.Services.AddScoped<IPrestamoService, PrestamoService>();
 builder.Services.AddSweetAlert2();
+
 
 // Configurar HttpClient
 builder.Services.AddHttpClient();

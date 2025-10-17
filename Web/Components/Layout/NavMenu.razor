@@ -1,6 +1,7 @@
 ﻿@inject FirebaseAuthService _firebaseAuthService
 @inject NavigationManager _navigationManager
 @inject IUsuarioService _usuarioService
+@inject IMemoryCache _memoryCache
 @rendermode InteractiveServer
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -24,6 +25,10 @@
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="miembros/buscar-libros">
                     <span class="bi bi-search" aria-hidden="true"></span> Buscar Libros
+                </NavLink>
+
+                <NavLink class="nav-link" href="/miembros/prestamos">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Prestamos libros
                 </NavLink>
 
                 <p class="text-white mt-2">Hola, @_usuarioLogueado?.Nombre</p>
@@ -77,6 +82,8 @@
         {
             _isLogued = false;
             _userLogued = null;
+            _usuarioLogueado = null;
+            _memoryCache.Remove("usuarioLogueado"); // Limpiar caché al cerrar sesión
             _navigationManager.NavigateTo("/login");
         }
         StateHasChanged();
@@ -89,6 +96,13 @@
             if (!string.IsNullOrWhiteSpace(_userLogued?.Email))
             {
                 _usuarioLogueado = await _usuarioService.GetByEmailAsync(_userLogued.Email);
+                
+                // ¡ESTA ES LA LÍNEA QUE FALTABA!
+                // Guardar el usuario en caché para que otras páginas puedan accederlo
+                if (_usuarioLogueado != null)
+                {
+                    _memoryCache.Set("usuarioLogueado", _usuarioLogueado, TimeSpan.FromHours(24));
+                }
             }
         }
         catch (Exception ex)
